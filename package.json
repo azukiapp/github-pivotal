@@ -1,0 +1,43 @@
+{
+  "name": "github-pivotal",
+  "version": "0.0.0",
+  "description": "github-pivotal",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "./node_modules/.bin/gulp lint test",
+    "deploy": "./node_modules/.bin/npm-deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azukiapp/github-pivotal.git"
+  },
+  "bin": {
+    "getMax": "./bin/getMax.js"
+  },
+  "keywords": [
+    "azk"
+  ],
+  "license": "Apache License",
+  "bugs": {
+    "url": "https://github.com/azukiapp/github-pivotal/issues"
+  },
+  "homepage": "https://github.com/azukiapp/github-pivotal",
+  "dependencies": {
+    "babel-runtime": "^5.1.11",
+    "bluebird": "^2.9.24",
+    "chalk": "^1.0.0",
+    "nopt": "^3.0.1",
+    "ramda": "^0.13.0",
+    "source-map-support": "^0.2.10"
+  },
+  "devDependencies": {
+    "azk-dev": "0.0.15",
+    "babel-runtime": "^5.1.11",
+    "gulp": "^3.8.11"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 0.10"
+  }
+}
