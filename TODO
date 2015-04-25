@@ -1,5 +1,26 @@
 TODO:
- ☐ TODO task
- ✔ Completed task
+
+Events:
+  Issues:
+   ☐ assigned
+   ☐ unassigned
+   ☐ labeled
+   ☐ unlabeled
+   ✔ opened @done (15-04-25 20:56)
+   ☐ closed
+   ☐ reopened
+  Pull Request:
+   ☐ assigned
+   ☐ unassigned
+   ☐ labeled
+   ☐ unlabeled
+   ✔ opened @done (15-04-25 20:55)
+   ☐ closed
+   ☐ reopened
+   ☐ synchronized
+  ✔ Issue/Pull Request comment created. @done (15-04-25 20:27)
+
+Kernel:
+ ☐ Create a way to identify projects through url webhook.
 
 ## To highlighter `TODO` files install [`PlainTasks`](https://github.com/aziz/PlainTasks)
