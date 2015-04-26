@@ -22,39 +22,58 @@ class Server {
 
 
     mentor.github_webhook.handler.on('issues', function (event) {
+      var payload = event.payload;
+      var issue   = payload.issue;
       log('Received an issue event for "%s" action=%s: "#%d %s"',
-        event.payload.repository.name,
-        event.payload.action,
-        event.payload.issue.number,
-        event.payload.issue.title);
+        payload.repository.name,
+        payload.action,
+        issue.number,
+        issue.title);
 
       var fn = camelize(`${event.event}_${event.payload.action}`);
-      if (!(mentor.hasOwnProperty(fn) && R.is(Function, mentor[fn]))) {
+      if (!(R.is(Function, mentor[fn]))) {
         console.error(`'${fn}' is not implemented!`);
         return;
       }
-      var [action, data] = mentor[fn](event.payload);
-      if (!R.isNil(action)) {
-        mentor.pivotal[action](data);
-      }
+
+      return BPromise.coroutine(function* () {
+        var [action, data] = mentor[fn](payload);
+        if (!R.isNil(action)) {
+          if (action == 'updateStory') {
+            var external_id = `${payload.repository.full_name}/issues/${issue.number}`;
+            var story       = yield mentor.pivotal.searchByExternalId(external_id);
+            data.id = story.id;
+          }
+          mentor.pivotal[action](data);
+        }
+      })();
     });
 
     mentor.github_webhook.handler.on('pull_request', function (event) {
+      var payload      = event.payload;
+      var pull_request = payload.pull_request;
       log('Received an pull_request event for "%s" action=%s: "#%d %s"',
-        event.payload.repository.full_name,
-        event.payload.action,
-        event.payload.pull_request.number,
-        event.payload.pull_request.title);
+        payload.repository.full_name,
+        payload.action,
+        pull_request.number,
+        pull_request.title);
 
-      var fn = camelize(`${event.event}_${event.payload.action}`);
-      if (!(mentor.hasOwnProperty(fn) && R.is(Function, mentor[fn]))) {
+      var fn = camelize(`${event.event}_${payload.action}`);
+      if (!(R.is(Function, mentor[fn]))) {
         console.error(`'${fn}' is not implemented!`);
         return;
       }
-      var [action, data] = mentor[fn](event.payload);
-      if (!R.isNil(action)) {
-        mentor.pivotal[action](data);
-      }
+      return BPromise.coroutine(function* () {
+        var [action, data] = mentor[fn](payload);
+        if (!R.isNil(action)) {
+          if (action == 'updateStory') {
+            var external_id = `${payload.repository.full_name}/pull/${pull_request.number}`;
+            var story       = yield mentor.pivotal.searchByExternalId(external_id);
+            data.id = story.id;
+          }
+          mentor.pivotal[action](data);
+        }
+      })();
     });
 
     // issue or pull request comment
@@ -70,7 +89,7 @@ class Server {
       log('    %s', payload.issue.html_url);
 
       var fn    = camelize(`${event.event}_${payload.action}`);
-      if (!(mentor.hasOwnProperty(fn) && R.is(Function, mentor[fn]))) {
+      if (!(R.is(Function, mentor[fn]))) {
         console.error(`'${fn}' is not implemented!`);
         return;
       }

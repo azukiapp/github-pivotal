@@ -7,16 +7,20 @@ Events:
    ☐ labeled
    ☐ unlabeled
    ✔ opened @done (15-04-25 20:56)
-   ☐ closed
-   ☐ reopened
+   ✔ closed @done (15-04-26 03:04)
+     ☐ add comment to closed
+   ✔ reopened @done (15-04-26 03:35)
   Pull Request:
    ☐ assigned
    ☐ unassigned
    ☐ labeled
    ☐ unlabeled
    ✔ opened @done (15-04-25 20:55)
-   ☐ closed
-   ☐ reopened
+   ✔ closed @done (15-04-26 02:41)
+     ☐ add comment to closed
+   ✔ merged (variation of closed) @done (15-04-26 02:41)
+     ☐ add comment to  merged
+   ✔ reopened @done (15-04-26 03:35)
    ☐ synchronized
   ✔ Issue/Pull Request comment created. @done (15-04-25 20:27)
 

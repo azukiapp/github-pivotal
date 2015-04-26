@@ -77,6 +77,27 @@ export class Pivotal {
     }.bind(this))();
   }
 
+  updateStory(story) {
+    return BPromise.coroutine(function* () {
+      var msg = "Update to project " + chalk.green(story.project_id) + " story ";
+      msg += chalk.green(story.name);
+      log(msg);
+      var project_id = story.project_id;
+
+      console.log('update story:', story);
+      delete(story.project_id);
+      story = yield this.client.updateStoryAsync(project_id, story.id, story);
+
+      if (story.kind === 'error') {
+        console.error('Error:', story);
+      } else {
+        log(`  ${chalk.green("Success")}: ${story.url}\n`);
+      }
+
+      return story;
+    }.bind(this))();
+  }
+
   createComment(comment, story) {
     return BPromise.coroutine(function* () {
       var msg = "Create comment to project " + chalk.green(comment.project_id) + " story ";

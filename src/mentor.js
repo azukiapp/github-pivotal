@@ -46,6 +46,60 @@ export class Mentor {
     return [ "createStory", data ];
   }
 
+  pullRequestClosed(payload) {
+    var pull_request = payload.pull_request;
+    var labels = this._parseIssueLabels('pull_request', payload);
+    var description = [
+      `[@${pull_request.user.login}](${pull_request.user.html_url}):`,
+      `${pull_request.body}`,
+      ``,
+      `-------------------`,
+      `[${payload.repository.full_name}#${pull_request.number}](${pull_request.html_url})`,
+    ].join('\n');
+    var action = 'Closed';
+    if (!!payload.pull_request.merged) { action = 'Merged'; }
+
+    var data = {
+      name          : `#${pull_request.number} ${pull_request.title}`,
+      current_state : `delivered`,
+      estimate      : 1,
+      external_id   : `${payload.repository.full_name}/pull/${pull_request.number}`,
+      project_id    : `${this.options.pivotal.project_id}`,
+      integration_id: parseInt(this.options.pivotal.integration_id),
+      labels,
+      description
+    };
+
+    return [ "updateStory", data ];
+  }
+
+  pullRequestReopened(payload) {
+    var pull_request = payload.pull_request;
+    var labels = this._parseIssueLabels('pull_request', payload);
+    var description = [
+      `[@${pull_request.user.login}](${pull_request.user.html_url}):`,
+      `${pull_request.body}`,
+      ``,
+      `-------------------`,
+      `[${payload.repository.full_name}#${pull_request.number}](${pull_request.html_url})`,
+    ].join('\n');
+    var action = 'Closed';
+    if (!!payload.pull_request.merged) { action = 'Merged'; }
+
+    var data = {
+      name          : `#${pull_request.number} ${pull_request.title}`,
+      current_state : `unstarted`,
+      estimate      : 1,
+      external_id   : `${payload.repository.full_name}/pull/${pull_request.number}`,
+      project_id    : `${this.options.pivotal.project_id}`,
+      integration_id: parseInt(this.options.pivotal.integration_id),
+      labels,
+      description
+    };
+
+    return [ "updateStory", data ];
+  }
+
   issuesOpened(payload) {
     var issue = payload.issue;
     var labels = this._parseIssueLabels('issue', payload);
@@ -67,6 +121,58 @@ export class Mentor {
     };
 
     return [ "createStory", data ];
+  }
+
+  issuesClosed(payload) {
+    var issue = payload.issue;
+    var labels = this._parseIssueLabels('issue', payload);
+    var description = [
+      `[@${issue.user.login}](${issue.user.html_url}):`,
+      `${issue.body}`,
+      ``,
+      `-------------------`,
+      `[${payload.repository.full_name}#${issue.number}](${issue.html_url})`,
+    ].join('\n');
+    var action = 'Closed';
+    if (!!payload.issue.merged) { action = 'Merged'; }
+
+    var data = {
+      name          : `#${issue.number} ${issue.title}`,
+      current_state : `delivered`,
+      estimate      : 1,
+      external_id   : `${payload.repository.full_name}/issues/${issue.number}`,
+      project_id    : `${this.options.pivotal.project_id}`,
+      integration_id: parseInt(this.options.pivotal.integration_id),
+      labels,
+      description
+    };
+
+    return [ "updateStory", data ];
+  }
+
+  issuesReopened(payload) {
+    var issue = payload.issue;
+    var labels = this._parseIssueLabels('issue', payload);
+    var description = [
+      `[@${issue.user.login}](${issue.user.html_url}):`,
+      `${issue.body}`,
+      ``,
+      `-------------------`,
+      `[${payload.repository.full_name}#${issue.number}](${issue.html_url})`,
+    ].join('\n');
+
+    var data = {
+      name          : `#${issue.number} ${issue.title}`,
+      current_state : `unstarted`,
+      estimate      : 1,
+      external_id   : `${payload.repository.full_name}/issues/${issue.number}`,
+      project_id    : `${this.options.pivotal.project_id}`,
+      integration_id: parseInt(this.options.pivotal.integration_id),
+      labels,
+      description
+    };
+
+    return [ "updateStory", data ];
   }
 
   issueCommentCreated(story_id, payload) {
@@ -91,8 +197,8 @@ export class Mentor {
   }
 
   // TODO
-  // Issues: assigned, unassigned, labeled, unlabeled, closed, or reopened.
-  // Pull Requests: assigned, unassigned, labeled, unlabeled, closed, reopened, or synchronized.
+  // Issues: assigned, unassigned, labeled or unlabeled.
+  // Pull Requests: assigned, unassigned, labeled, unlabeled, or synchronized.
   // issuesLabeled(payload) {
   //   return [];
   // }
@@ -101,6 +207,8 @@ export class Mentor {
     var labels      = [ kind, payload.repository.name ];
     if (payload && payload.hasOwnProperty(kind)) {
       var kind_labels = payload[kind].labels || [];
+      if (payload[kind].state === 'closed') { labels = labels.concat(['closed']); }
+      if (!!payload[kind].merged          ) { labels = labels.concat(['merged']); }
       labels = labels.concat(R.map((label) => label.name, kind_labels));
     }
 
