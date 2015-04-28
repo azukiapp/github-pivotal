@@ -6,9 +6,7 @@ var BPromise = require("bluebird");
 
 describe('class Mentor', function() {
   var options = {
-    github : { secret : process.env.GITHUB_SECRET_KEY },
     pivotal: {
-      api_key       : process.env.PIVOTAL_API_KEY,
       project_id    : process.env.PIVOTAL_PROJECT_ID,
       integration_id: process.env.PIVOTAL_INTEGRATION_ID
     }

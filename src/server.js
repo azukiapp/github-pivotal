@@ -1,4 +1,6 @@
 import { Mentor } from "./mentor";
+import { GithubWebhook } from "./github/webhooks";
+import { Pivotal } from "./pivotal";
 import { camelize, log } from "./utils";
 
 var R        = require("ramda");
@@ -6,22 +8,24 @@ var http     = require("http");
 var BPromise = require("bluebird");
 
 class Server {
-  constructor(port, options) {
-    var mentor = new Mentor(options);
+  constructor(port, keys, options) {
+    var mentor         = new Mentor       (options);
+    var github_webhook = new GithubWebhook(keys.github_secret_key, mentor.options.github);
+    var pivotal        = new Pivotal      (keys.pivotal_api_key  , mentor.options.pivotal);
 
     http.createServer(function (req, res) {
-      mentor.github_webhook.handler(req, res, function () {
+      github_webhook.handler(req, res, function () {
         res.statusCode = 404;
         res.end('no such location');
       });
     }).listen(port || 5000);
 
-    mentor.github_webhook.handler.on('error', function (err) {
+    github_webhook.handler.on('error', function (err) {
       console.error('Error:', err.message);
     });
 
 
-    mentor.github_webhook.handler.on('issues', function (event) {
+    github_webhook.handler.on('issues', function (event) {
       var payload = event.payload;
       var issue   = payload.issue;
       log('Received an issue event for "%s" action=%s: "#%d %s"',
@@ -41,15 +45,15 @@ class Server {
         if (!R.isNil(action)) {
           if (action == 'updateStory') {
             var external_id = `${payload.repository.full_name}/issues/${issue.number}`;
-            var story       = yield mentor.pivotal.searchByExternalId(external_id);
+            var story       = yield pivotal.searchByExternalId(external_id);
             data.id = story.id;
           }
-          mentor.pivotal[action](data);
+          pivotal[action](data);
         }
       })();
     });
 
-    mentor.github_webhook.handler.on('pull_request', function (event) {
+    github_webhook.handler.on('pull_request', function (event) {
       var payload      = event.payload;
       var pull_request = payload.pull_request;
       log('Received an pull_request event for "%s" action=%s: "#%d %s"',
@@ -68,16 +72,16 @@ class Server {
         if (!R.isNil(action)) {
           if (action == 'updateStory') {
             var external_id = `${payload.repository.full_name}/pull/${pull_request.number}`;
-            var story       = yield mentor.pivotal.searchByExternalId(external_id);
+            var story       = yield pivotal.searchByExternalId(external_id);
             data.id = story.id;
           }
-          mentor.pivotal[action](data);
+          pivotal[action](data);
         }
       })();
     });
 
     // issue or pull request comment
-    mentor.github_webhook.handler.on('issue_comment', function (event) {
+    github_webhook.handler.on('issue_comment', function (event) {
       var payload = event.payload;
       var issue   = payload.issue;
       var kind    = (issue.pull_request) ? "pull" : "issue";
@@ -96,12 +100,12 @@ class Server {
 
       return BPromise.coroutine(function* () {
         var external_id = `${payload.repository.full_name}/${kind}/${issue.number}`;
-        var story       = yield mentor.pivotal.searchByExternalId(external_id);
+        var story       = yield pivotal.searchByExternalId(external_id);
 
         if (!R.isNil(story)) {
           var [action, data] = mentor[fn](story.id, payload);
           if (!R.isNil(action)) {
-            mentor.pivotal[action](data, story);
+            pivotal[action](data, story);
           }
         }
       })();

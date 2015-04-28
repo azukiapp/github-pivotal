@@ -30,16 +30,14 @@ class PivotalTracker extends PivotalJs {
 }
 
 export class Pivotal {
-  constructor(options) {
-    if (R.isNil(options.api_key) || R.isEmpty(options.api_key)) {
-      throw new Error('`PIVOTAL_API_KEY` is required');
-    } else if (R.isNil(options.project_id) || R.isEmpty(options.project_id)) {
-      throw new Error('`PIVOTAL_PROJECT_ID` is required');
-    } else if (!R.is(Number, options.integration_id)) {
-      throw new Error('`PIVOTAL_INTEGRATION_ID` undefined or invalid');
+  constructor(api_key, options) {
+    options = options || {};
+
+    if (R.isNil(api_key) || R.isEmpty(api_key)) {
+      throw new Error('`api_key` is required');
     }
 
-    this.client     = BPromise.promisifyAll(new PivotalTracker(options.api_key));
+    this.client     = BPromise.promisifyAll(new PivotalTracker(api_key));
     this.project_id = options.project_id;
   }
 

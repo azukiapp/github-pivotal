@@ -2,25 +2,35 @@ import { defaults } from "./utils";
 import { GithubWebhook } from "./github/webhooks";
 import { Pivotal } from "./pivotal";
 
-var R        = require("ramda");
+var R = require("ramda");
 
 export class Mentor {
   constructor(options) {
-    this.options = defaults({
+    this.options = this.defaults(options);
+  }
+
+  // normalize options
+  defaults(options) {
+    options = defaults({
       github: { path  : '/webhooks/github' },
       pivotal: {
         // required:
         // api_key   : api_key,
         // project_id: project_id
+      },
+      state: {
+        issues      : 'unstarted',
+        pull_request: 'unstarted'
       }
     }, options);
 
-    if (this.options.pivotal && !R.is(Number, this.options.pivotal.integration_id)) {
-      this.options.pivotal.integration_id = parseInt(this.options.pivotal.integration_id);
+    if (!R.is(Number, options.pivotal.integration_id)) {
+      options.pivotal.integration_id = parseInt(options.pivotal.integration_id);
     }
 
     this.github_webhook = new GithubWebhook(this.options.github);
     this.pivotal        = new Pivotal(this.options.pivotal);
+    return options;
   }
 
   pullRequestOpened(payload) {
