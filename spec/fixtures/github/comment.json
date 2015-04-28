@@ -1,0 +1,28 @@
+{
+  "url": "https://api.github.com/repos/azukiapp/azk/issues/comments/97166767",
+  "html_url": "https://github.com/azukiapp/azk/issues/378#issuecomment-97166767",
+  "issue_url": "https://api.github.com/repos/azukiapp/azk/issues/378",
+  "id": 97166767,
+  "user": {
+    "login": "nuxlli",
+    "id": 8738,
+    "avatar_url": "https://avatars.githubusercontent.com/u/8738?v=3",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nuxlli",
+    "html_url": "https://github.com/nuxlli",
+    "followers_url": "https://api.github.com/users/nuxlli/followers",
+    "following_url": "https://api.github.com/users/nuxlli/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nuxlli/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nuxlli/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nuxlli/subscriptions",
+    "organizations_url": "https://api.github.com/users/nuxlli/orgs",
+    "repos_url": "https://api.github.com/users/nuxlli/repos",
+    "events_url": "https://api.github.com/users/nuxlli/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nuxlli/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "created_at": "2015-04-28T18:43:58Z",
+  "updated_at": "2015-04-28T18:43:58Z",
+  "body": "@fearenales, this a weird error once `azk shell` is parsing these options at:  https://github.com/azukiapp/azk/blob/master/src%2Fcmds%2Fshell.js#L51-L53.\r\n\r\nA problem may be happening when merging options from command line with the ones in Azkfile.js when building parameters to pass over to Docker: https://github.com/azukiapp/azk/blob/master/src%2Fsystem%2Findex.js#L491-L528"
+}

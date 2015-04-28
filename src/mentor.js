@@ -1,6 +1,4 @@
 import { defaults } from "./utils";
-import { GithubWebhook } from "./github/webhooks";
-import { Pivotal } from "./pivotal";
 
 var R = require("ramda");
 
@@ -19,7 +17,7 @@ export class Mentor {
         // project_id: project_id
       },
       state: {
-        issues      : 'unstarted',
+        issue       : 'unstarted',
         pull_request: 'unstarted'
       }
     }, options);
@@ -27,175 +25,51 @@ export class Mentor {
     if (!R.is(Number, options.pivotal.integration_id)) {
       options.pivotal.integration_id = parseInt(options.pivotal.integration_id);
     }
-
-    this.github_webhook = new GithubWebhook(this.options.github);
-    this.pivotal        = new Pivotal(this.options.pivotal);
     return options;
   }
 
   pullRequestOpened(payload) {
-    var pull_request = payload.pull_request;
-    var labels = this._parseIssueLabels('pull_request', payload);
-    var description = [
-      `[@${pull_request.user.login}](${pull_request.user.html_url}):`,
-      `${pull_request.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${pull_request.number}](${pull_request.html_url})`,
-    ].join('\n');
-
-    var data = {
-      name          : `#${pull_request.number} ${pull_request.title}`,
-      external_id   : `${payload.repository.full_name}/pull/${pull_request.number}`,
-      project_id    : `${this.options.pivotal.project_id}`,
-      integration_id: parseInt(this.options.pivotal.integration_id),
-      labels,
-      description
-    };
-
+    var data = this.normalizeIssue('pull', payload.pull_request, payload.repository);
     return [ "createStory", data ];
   }
 
   pullRequestClosed(payload) {
-    var pull_request = payload.pull_request;
-    var labels = this._parseIssueLabels('pull_request', payload);
-    var description = [
-      `[@${pull_request.user.login}](${pull_request.user.html_url}):`,
-      `${pull_request.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${pull_request.number}](${pull_request.html_url})`,
-    ].join('\n');
-    var action = 'Closed';
-    if (!!payload.pull_request.merged) { action = 'Merged'; }
-
-    var data = {
-      name          : `#${pull_request.number} ${pull_request.title}`,
-      current_state : `delivered`,
-      estimate      : 1,
-      external_id   : `${payload.repository.full_name}/pull/${pull_request.number}`,
-      project_id    : `${this.options.pivotal.project_id}`,
-      integration_id: parseInt(this.options.pivotal.integration_id),
-      labels,
-      description
-    };
-
+    var data = this.normalizeIssue('pull', payload.pull_request, payload.repository);
     return [ "updateStory", data ];
   }
 
   pullRequestReopened(payload) {
-    var pull_request = payload.pull_request;
-    var labels = this._parseIssueLabels('pull_request', payload);
-    var description = [
-      `[@${pull_request.user.login}](${pull_request.user.html_url}):`,
-      `${pull_request.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${pull_request.number}](${pull_request.html_url})`,
-    ].join('\n');
-    var action = 'Closed';
-    if (!!payload.pull_request.merged) { action = 'Merged'; }
-
-    var data = {
-      name          : `#${pull_request.number} ${pull_request.title}`,
+    var data = this.normalizeIssue('pull', payload.pull_request, payload.repository, {
       current_state : `unstarted`,
       estimate      : 1,
-      external_id   : `${payload.repository.full_name}/pull/${pull_request.number}`,
-      project_id    : `${this.options.pivotal.project_id}`,
-      integration_id: parseInt(this.options.pivotal.integration_id),
-      labels,
-      description
-    };
-
+    });
     return [ "updateStory", data ];
   }
 
   issuesOpened(payload) {
-    var issue = payload.issue;
-    var labels = this._parseIssueLabels('issue', payload);
-    var description = [
-      `[@${issue.user.login}](${issue.user.html_url}):`,
-      `${issue.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${issue.number}](${issue.html_url})`,
-    ].join('\n');
-
-    var data = {
-      name          : `#${issue.number} ${issue.title}`,
-      external_id   : `${payload.repository.full_name}/issues/${issue.number}`,
-      project_id    : `${this.options.pivotal.project_id}`,
-      integration_id: parseInt(this.options.pivotal.integration_id),
-      labels,
-      description
-    };
-
+    var data = this.normalizeIssue('issues', payload.issue, payload.repository);
     return [ "createStory", data ];
   }
 
   issuesClosed(payload) {
-    var issue = payload.issue;
-    var labels = this._parseIssueLabels('issue', payload);
-    var description = [
-      `[@${issue.user.login}](${issue.user.html_url}):`,
-      `${issue.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${issue.number}](${issue.html_url})`,
-    ].join('\n');
-    var action = 'Closed';
-    if (!!payload.issue.merged) { action = 'Merged'; }
-
-    var data = {
-      name          : `#${issue.number} ${issue.title}`,
-      current_state : `delivered`,
-      estimate      : 1,
-      external_id   : `${payload.repository.full_name}/issues/${issue.number}`,
-      project_id    : `${this.options.pivotal.project_id}`,
-      integration_id: parseInt(this.options.pivotal.integration_id),
-      labels,
-      description
-    };
-
+    var data = this.normalizeIssue('issues', payload.issue, payload.repository);
     return [ "updateStory", data ];
   }
 
   issuesReopened(payload) {
-    var issue = payload.issue;
-    var labels = this._parseIssueLabels('issue', payload);
-    var description = [
-      `[@${issue.user.login}](${issue.user.html_url}):`,
-      `${issue.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${issue.number}](${issue.html_url})`,
-    ].join('\n');
-
-    var data = {
-      name          : `#${issue.number} ${issue.title}`,
+    var data = this.normalizeIssue('issues', payload.issue, payload.repository, {
       current_state : `unstarted`,
       estimate      : 1,
-      external_id   : `${payload.repository.full_name}/issues/${issue.number}`,
-      project_id    : `${this.options.pivotal.project_id}`,
-      integration_id: parseInt(this.options.pivotal.integration_id),
-      labels,
-      description
-    };
-
+    });
     return [ "updateStory", data ];
   }
 
   issueCommentCreated(story_id, payload) {
     var comment = payload.comment;
     var issue   = payload.issue;
+    var repo    = payload.repository;
 
-    var text = [
-      `[@${issue.user.login}](${issue.user.html_url}):`,
-      `${comment.body}`,
-      ``,
-      `-------------------`,
-      `[${payload.repository.full_name}#${issue.number}-${comment.id}](${comment.html_url})`,
-    ].join('\n');
+    var text = this.normalizeComment(comment, issue, repo);
 
     var data = {
       story_id  : story_id,
@@ -213,16 +87,84 @@ export class Mentor {
   //   return [];
   // }
 
-  _parseIssueLabels(kind, payload) {
-    var labels      = [ kind, payload.repository.name ];
-    if (payload && payload.hasOwnProperty(kind)) {
-      var kind_labels = payload[kind].labels || [];
-      if (payload[kind].state === 'closed') { labels = labels.concat(['closed']); }
-      if (!!payload[kind].merged          ) { labels = labels.concat(['merged']); }
-      labels = labels.concat(R.map((label) => label.name, kind_labels));
+  normalizeIssue(kind, issue, repo, append) {
+    var kind_full = (kind === 'pull') ? 'pull_request' : 'issue';
+
+    var labels = [ kind_full, repo.name ].concat(this._parseIssueLabels(issue));
+
+    var description = [
+      `[@${issue.user.login}](${issue.user.html_url}):`,
+      `${issue.body}`,
+      ``,
+      `-------------------`,
+      `[${repo.full_name}#${issue.number}](${issue.html_url})`,
+    ].join('\n');
+
+    var story = {
+      name          : `#${issue.number} ${issue.title}`,
+      external_id   : `${repo.full_name}/${kind}/${issue.number}`,
+      project_id    : `${this.options.pivotal.project_id}`,
+      integration_id: parseInt(this.options.pivotal.integration_id),
+      labels,
+      description
+    };
+
+    if (issue.state === 'closed') {
+      story.current_state = `delivered`;
+      story.estimate      = 1
+    } else if (!R.isNil(this.options.state[kind_full])) {
+      story.current_state = this.options.state[kind_full];
     }
+    if (!R.isNil(append) && R.is(Object, append)) {
+      story = R.merge(story, append);
+    }
+
+    if (issue.comments && R.is(Array, issue.comments)) {
+      story.comments = this.normalizeAllComments(issue.comments, issue, repo);
+    }
+
+    return story;
+  }
+
+  normalizeComment(comment, issue, repo) {
+    var text = [
+      `[@${comment.user.login}](${comment.user.html_url}):`,
+      `${comment.body}`,
+      ``,
+      `-------------------`,
+      `[${repo.full_name}#${issue.number}-${comment.id}](${comment.html_url})`,
+    ].join('\n');
+
+    return text;
+  }
+
+  normalizeAllIssue(issues, repo) {
+    var stories = [];
+    for (var i = 0; i < issues.length; i++) {
+      var kind  = !!issues[i].pull_request ? 'pull' : 'issues';
+      var story = this.normalizeIssue(kind, issues[i], repo);
+      stories.push(story);
+    }
+    return stories;
+  }
+
+  normalizeAllComments(comments, issue, repo) {
+    var story_comments = [];
+    for (var i = 0; i < comments.length; i++) {
+      var comment = {
+        text: this.normalizeComment(comments[i], issue, repo)
+      };
+      story_comments.push(comment);
+    }
+    return story_comments;
+  }
+
+  _parseIssueLabels(issue) {
+    var labels = [];
+    if (  issue.state === 'closed') { labels = labels.concat(['closed']); }
+    if (!!issue.merged            ) { labels = labels.concat(['merged']); }
+    labels = labels.concat(R.map((label) => label.name, issue.labels || []));
 
     return R.uniq(labels);
   }
-
 }
