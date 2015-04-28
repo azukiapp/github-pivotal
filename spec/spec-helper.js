@@ -1,8 +1,10 @@
 require('source-map-support').install();
+import Utils from '../src/utils';
+import { BPromise, fs, path, args } from '../src/utils';
 
-var path     = require("path");
-var BPromise = require("bluebird");
-var fs       = BPromise.promisifyAll(require("fs"));
+if (!args.debug) {
+  Utils.verbose = false;
+}
 
 var Helpers = {
   expect : require('azk-dev/chai').expect,
