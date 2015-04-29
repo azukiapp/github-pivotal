@@ -62,7 +62,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'issue', 'azk' ];
+        var labels         = [ 'github', 'issue', 'azk' ];
 
         h.expect(story.name          ).to.deep.equal("#369 azk agent does not start");
         h.expect(story.external_id   ).to.deep.equal("azukiapp/azk/issue/369");
@@ -91,7 +91,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'pull_request', 'github-pivotal', 'enhancement' ];
+        var labels         = [ 'github', 'pull_request', 'github-pivotal', 'enhancement' ];
 
         h.expect(story.name          ).to.deep.equal("#2 Adding `github-webhook-handler`");
         h.expect(story.external_id   ).to.deep.equal("azukiapp/github-pivotal/pull/2");
@@ -147,7 +147,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'pull_request', 'github-pivotal', 'enhancement' ];
+        var labels         = [ 'github', 'pull_request', 'github-pivotal', 'enhancement' ];
 
         h.expect(action).to.eql("createStory");
         h.expect(data.name          ).to.deep.equal("#2 Adding `github-webhook-handler`");
@@ -177,7 +177,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'pull_request', 'github-pivotal', 'closed' ];
+        var labels         = [ 'github', 'pull_request', 'github-pivotal', 'closed' ];
 
         h.expect(action).to.eql("updateStory");
         h.expect(data.name          ).to.deep.equal("#5 Revert \"Adding `github-webhook-handler`\"");
@@ -209,7 +209,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'pull_request', 'github-pivotal', 'closed', 'merged' ];
+        var labels         = [ 'github', 'pull_request', 'github-pivotal', 'closed', 'merged' ];
 
         h.expect(action).to.eql("updateStory");
         h.expect(data.name          ).to.deep.equal("#2 Adding `github-webhook-handler`");
@@ -241,7 +241,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'pull_request', 'github-pivotal' ];
+        var labels         = [ 'github', 'pull_request', 'github-pivotal' ];
 
         h.expect(action).to.eql("updateStory");
         h.expect(data.name          ).to.deep.equal("#5 Revert \"Adding `github-webhook-handler`\"");
@@ -273,7 +273,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'issue', 'github-pivotal', 'bug', 'enhancement', 'question' ];
+        var labels         = [ 'github', 'issue', 'github-pivotal', 'bug', 'enhancement', 'question' ];
 
         h.expect(action).to.eql("createStory");
         h.expect(data.name          ).to.deep.equal("#1 teste issue");
@@ -308,7 +308,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'issue', 'github-pivotal', 'closed' ];
+        var labels         = [ 'github', 'issue', 'github-pivotal', 'closed' ];
 
         h.expect(action).to.eql("updateStory");
         h.expect(data.name          ).to.deep.equal("#1 teste issue");
@@ -345,7 +345,7 @@ describe('class Mentor', function() {
 
         var project_id     = options.pivotal.project_id;
         var integration_id = parseInt(options.pivotal.integration_id);
-        var labels         = [ 'issue', 'github-pivotal' ];
+        var labels         = [ 'github', 'issue', 'github-pivotal' ];
 
         h.expect(action).to.eql("updateStory");
         h.expect(data.name          ).to.deep.equal("#1 teste issue");

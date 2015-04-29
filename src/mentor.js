@@ -90,7 +90,7 @@ export class Mentor {
   normalizeIssue(kind, issue, repo, append) {
     var kind_full = (kind === 'pull') ? 'pull_request' : 'issue';
 
-    var labels = [ kind_full, repo.name ].concat(this._parseIssueLabels(issue));
+    var labels = [ 'github', kind_full, repo.name ].concat(this._parseIssueLabels(issue));
 
     var description = [
       `[@${issue.user.login}](${issue.user.html_url}):`,
