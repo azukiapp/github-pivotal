@@ -99,7 +99,7 @@ export class Pivotal {
 
         stories = to_send;
         retries++;
-      } while (!R.isEmpty(to_send) && this.max_retries < retries);
+      } while (!R.isEmpty(to_send) && retries < this.max_retries);
 
       return result_stories;
     }.bind(this))();
