@@ -1,6 +1,6 @@
 {
   "name": "github-pivotal",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "github-pivotal",
   "main": "index.js",
   "scripts": {
