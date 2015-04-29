@@ -77,13 +77,24 @@ export class Pivotal {
 
   createStories(stories) {
     return BPromise.coroutine(function* () {
-      var result_stories = [];
       log("Push", chalk.green(stories.length), "stories");
+      var result_stories = [];
+      var to_send;
 
-      for (var i = 0; i < stories.length; i++) {
-        var story = yield this.createStory(stories[i]);
-        result_stories.push(story);
-      }
+      do {
+        to_send = [];
+
+        for (var i = 0; i < stories.length; i++) {
+          var result = yield this.createStory(stories[i]);
+          if (result.kind === 'error') {
+            to_send.push(stories[i])
+          } else {
+            result_stories.push(result);
+          }
+        }
+
+        stories = to_send;
+      } while (!R.isEmpty(to_send));
 
       return result_stories;
     }.bind(this))();
