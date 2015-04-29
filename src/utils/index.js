@@ -1,6 +1,6 @@
 var Utils = {
   __esModule: true,
-  get default () { return Utils },
+  get default () { return Utils; },
 
   // options
   verbose: true,
@@ -12,8 +12,8 @@ var Utils = {
   get chalk   () { return require('chalk'); },
   get path    () { return require('path'); },
   get fs      () { return Utils.BPromise.promisifyAll(require('fs')); },
-  get argv    () { return require('yargs').argv },
-  get args    () { return Utils.argv },
+  get argv    () { return require('yargs').argv; },
+  get args    () { return Utils.argv; },
 
   promisifyAll(obj, options, depth) {
     depth = depth || 1;
@@ -21,7 +21,7 @@ var Utils = {
       depth: 2
     }, options);
 
-    obj = Utils.R.mapObjIndexed((value, key, _obj) => {
+    obj = Utils.R.mapObj((value) => {
       if (depth < options.depth) {
         value = Utils.promisifyAll(value, options, depth + 1);
       }

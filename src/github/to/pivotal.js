@@ -1,4 +1,4 @@
-import { R, BPromise, log, chalk } from "../../utils";
+import { R, BPromise } from "../../utils";
 import { Github } from "../../github";
 import { Mentor } from "../../mentor";
 import { Pivotal } from "../../pivotal";
@@ -18,7 +18,7 @@ export class GithubToPivotal {
     return BPromise.coroutine(function* () {
       for (var i in repositories) {
         var repository = yield this.github.repoByUrl(repositories[i]);
-        var params     = { state: 'open', per_page: '100' };
+        var params     = { state: 'open', per_page: '1' };
         var issues     = yield this.github.issuesWithCommentsByRepo(repository, params);
         var stories    = this.mentor.normalizeAllIssue(issues, repository);
         stories = yield this.pivotal.createStories(stories);

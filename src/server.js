@@ -24,7 +24,6 @@ class Server {
       console.error('Error:', err.message);
     });
 
-
     github_webhook.handler.on('issues', function (event) {
       var payload = event.payload;
       var issue   = payload.issue;

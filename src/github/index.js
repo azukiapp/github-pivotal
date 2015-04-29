@@ -9,7 +9,7 @@ class Github {
       version: '3.0.0',
       // debug: true
     });
-    var auth = this.api.authenticate({
+    this.api.authenticate({
       type: "basic",
       username: 'gullitmiranda',
       password: api_key
@@ -23,7 +23,7 @@ class Github {
     log("Get repository data by url", chalk.green(url));
 
     return BPromise.coroutine(function* () {
-      var repo = yield this.client.repos.getAsync(params)
+      var repo = yield this.client.repos.getAsync(params);
 
       return repo;
     }.bind(this))();
@@ -34,21 +34,17 @@ class Github {
       "  Get issues (and pull_request) to repository",
       chalk.green(`${params.user}/${params.repo}`)
     ];
-    if (params.state) { msg_arr.push("with state", params.state) }
+    if (params.state) { msg_arr.push("with state", params.state); }
     log(...msg_arr);
 
-    return BPromise.coroutine(function* () {
-      return this.client.issues.repoIssuesAsync(params);
-    }.bind(this))();
+    return this.client.issues.repoIssuesAsync(params);
   }
 
   getCommentsByIssue(issue, params) {
     var params_with_issue = R.merge(params, { number: issue.number });
     log("    Get comments to issue", chalk.green(`#${issue.number}`), issue.title);
 
-    return BPromise.coroutine(function* () {
-      return this.client.issues.getCommentsAsync(params_with_issue);
-    }.bind(this))();
+    return this.client.issues.getCommentsAsync(params_with_issue);
   }
 
   issuesWithCommentsByRepo(repo, params) {

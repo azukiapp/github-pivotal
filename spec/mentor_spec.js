@@ -17,7 +17,7 @@ describe('class Mentor', function() {
     var repository;
     var should_comment = [
       "[@nuxlli](https://github.com/nuxlli):",
-      "@fearenales, this a weird error once `azk shell` is parsing these options at:  "+
+      "@fearenales, this a weird error once `azk shell` is parsing these options at:  " +
         "https://github.com/azukiapp/azk/blob/master/src%2Fcmds%2Fshell.js#L51-L53.\r",
       "\r",
       "A problem may be happening when merging options from command line with the ones in Azkfile.js " +
@@ -117,7 +117,7 @@ describe('class Mentor', function() {
 
     it('should normalized comment', function() {
       return BPromise.coroutine(function* () {
-        var event_name = "comment"
+        var event_name = "comment";
         var comment    = yield h.mockPayload(event_name);
         var issue      = yield h.mockPayload('issue_with_comment');
 

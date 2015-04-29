@@ -111,7 +111,7 @@ export class Mentor {
 
     if (issue.state === 'closed') {
       story.current_state = `delivered`;
-      story.estimate      = 1
+      story.estimate      = 1;
     } else if (!R.isNil(this.options.state[kind_full])) {
       story.current_state = this.options.state[kind_full];
     }
