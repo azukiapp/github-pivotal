@@ -75,6 +75,20 @@ export class Pivotal {
     }.bind(this))();
   }
 
+  createStories(stories) {
+    return BPromise.coroutine(function* () {
+      var result_stories = [];
+      log("Push", chalk.green(stories.length), "stories");
+
+      for (var i = 0; i < stories.length; i++) {
+        var story = yield this.createStory(stories[i]);
+        result_stories.push(story);
+      }
+
+      return result_stories;
+    }.bind(this))();
+  }
+
   updateStory(story) {
     return BPromise.coroutine(function* () {
       var msg = "Update to project " + chalk.green(story.project_id) + " story ";
@@ -82,7 +96,6 @@ export class Pivotal {
       log(msg);
       var project_id = story.project_id;
 
-      console.log('update story:', story);
       delete(story.project_id);
       story = yield this.client.updateStoryAsync(project_id, story.id, story);
 

@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+/*jslint evil: true */
+require('source-map-support').install();
+
+require('dotenv').load({ silent: true });
+
+var nopt = require('nopt');
+
+var knownOpts = {
+  'help'    : Boolean
+};
+
+var shortHands = {
+  '?': ['--help'],
+  'h': ['--help']
+};
+
+// everything is optional.
+// knownOpts and shorthands default to {}
+// arg list defaults to process.argv
+// slice defaults to 2
+var parsed = nopt(knownOpts, shortHands, process.argv, 2);
+
+if (parsed.help || parsed.argv.original.length === 0) {
+  var usage_message = ['',
+    ' Usage:',
+    '',
+    '   $ github_pivotal repository [repository [...]]',
+    '',
+    ' Options:',
+    '',
+    '   --help, -h, -?   show this help message',
+    '',
+    ' Examples:',
+    '',
+    '   $ github_pivotal azukiapp/azk',
+    '   $ github_pivotal azukiapp/azk azukiapp/homebrew-azk',
+    ''
+  ].join('\n');
+
+  console.log(usage_message);
+  process.exit(1);
+}
+
+var keys = {
+  github_secret_key: process.env.GITHUB_SECRET_KEY,
+  pivotal_api_key  : process.env.PIVOTAL_API_KEY
+};
+var options = {
+  pivotal: {
+    project_id    : process.env.PIVOTAL_PROJECT_ID,
+    integration_id: process.env.PIVOTAL_INTEGRATION_ID
+  }
+};
+
+var repos = parsed.argv.remain;
+
+var GithubToPivotal = require('../lib/src/github').GithubToPivotal;
+(new GithubToPivotal(keys, options)).run(repos);

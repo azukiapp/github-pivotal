@@ -23,6 +23,7 @@ Events:
    ✔ reopened @done (15-04-26 03:35)
    ☐ synchronized
   ✔ Issue/Pull Request comment created. @done (15-04-25 20:27)
+  ☐ Check issue/pull_request and comments is exist.
 
 Kernel:
  ☐ Create a way to identify projects through url webhook.
