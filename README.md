@@ -1,12 +1,5 @@
 # github-pivotal
 
-`azk-projects-boilerplate` follow `azk` standards to create new npm packages.
-Search for `azk-projects-boilerplate` to find what have to be changed before upload.
-
-- **src**:  all files will transpiled with babel to lib/src
-- **spec**: all files will transpiled with babel to lib/spec
-- **bin**:  no ocours transpilation here
-
 #### Migrate repository:
 
 - Change the target project in the pivotal:
@@ -27,6 +20,25 @@ Search for `azk-projects-boilerplate` to find what have to be changed before upl
     ```
 
     NOTE: changge `azukiapp/azk` to your repository
+
+#### Add webhooks of new repository
+
+- Get secret to configure in Github :
+
+    ```
+    $ heroku config:get GITHUB_SECRET_KEY
+    ```
+
+- Configure repository to send webhooks to app:
+
+    1. Access `Settings > Webhooks & Services` of your repository and click in `Add Webhook`:
+
+        i.g.: https://github.com/azukiapp/github-pivotal/settings/hooks/new (change `github-pivotal` with name of your project).
+
+    2. And fill out the form with your information, including `GITHUB_SECRET_KEY` you took the heroku and save:
+
+       ![Add Webhook](docs/add_webhook.png)
+
 
 #### Before start development
 
@@ -53,7 +65,7 @@ Search for `azk-projects-boilerplate` to find what have to be changed before upl
     $ git commit -m 'Start the project based on the `azk-projects-boilerplate`.'
     ```
 
-## azk-dev
+## dev
 
 Show all gulp tasks:
 
