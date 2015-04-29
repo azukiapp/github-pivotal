@@ -20,7 +20,7 @@ export class GithubToPivotal {
         var repository = yield this.github.repoByUrl(repositories[i]);
         var params     = { state: 'open', per_page: '100' };
         var issues     = yield this.github.issuesWithCommentsByRepo(repository, params);
-        var stories    = this.mentor.normalizeAllIssue(issues, repository);
+        var stories    = this.mentor.normalizeAllIssue('opened', issues, repository);
         stories = yield this.pivotal.createStories(stories);
 
         // console.log(JSON.stringify(stories, null, 2));

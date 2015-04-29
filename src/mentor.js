@@ -29,35 +29,40 @@ export class Mentor {
   }
 
   pullRequestOpened(payload) {
-    var data = this.normalizeIssue('pull', payload.pull_request, payload.repository);
+    var data = this.normalizeIssue('pull', payload.action, payload.pull_request, payload.repository);
     return [ "createStory", data ];
   }
 
   pullRequestClosed(payload) {
-    var data = this.normalizeIssue('pull', payload.pull_request, payload.repository);
+    var data = this.normalizeIssue('pull', payload.action, payload.pull_request, payload.repository);
     return [ "updateStory", data ];
   }
 
   pullRequestReopened(payload) {
-    var data = this.normalizeIssue('pull', payload.pull_request, payload.repository, {
-      current_state : `unstarted`,
-      estimate      : 1,
-    });
+    var data = this.normalizeIssue(
+      'pull',
+      payload.action,
+      payload.pull_request,
+      payload.repository, {
+        current_state : `unstarted`,
+        estimate      : 1,
+      }
+    );
     return [ "updateStory", data ];
   }
 
   issuesOpened(payload) {
-    var data = this.normalizeIssue('issues', payload.issue, payload.repository);
+    var data = this.normalizeIssue('issues', payload.action, payload.issue, payload.repository);
     return [ "createStory", data ];
   }
 
   issuesClosed(payload) {
-    var data = this.normalizeIssue('issues', payload.issue, payload.repository);
+    var data = this.normalizeIssue('issues', payload.action, payload.issue, payload.repository);
     return [ "updateStory", data ];
   }
 
   issuesReopened(payload) {
-    var data = this.normalizeIssue('issues', payload.issue, payload.repository, {
+    var data = this.normalizeIssue('issues', payload.action, payload.issue, payload.repository, {
       current_state : `unstarted`,
       estimate      : 1,
     });
@@ -87,7 +92,7 @@ export class Mentor {
   //   return [];
   // }
 
-  normalizeIssue(kind, issue, repo, append) {
+  normalizeIssue(kind, action, issue, repo, append) {
     var kind_full = (kind === 'pull') ? 'pull_request' : 'issue';
 
     var labels = [ 'github', kind_full, repo.name ].concat(this._parseIssueLabels(issue));
@@ -115,12 +120,43 @@ export class Mentor {
     } else if (!R.isNil(this.options.state[kind_full])) {
       story.current_state = this.options.state[kind_full];
     }
-    if (!R.isNil(append) && R.is(Object, append)) {
-      story = R.merge(story, append);
+
+    // add default tasks
+    if (action === 'opened') {
+      var tasks = [
+        "Check for duplicity",
+        "Feedback to requester"
+      ];
+
+      if (kind_full === 'pull_request') {
+        tasks.push(
+          "Mention to issue in PR description",
+          "Linux test",
+          "Mac test",
+          "Merge",
+          "Close related issues"
+        );
+      } else {
+        tasks.push(
+          "Prioritize",
+          "Breakdown",
+          "Implement/Solve",
+          "Testing",
+          "Update CHANGELOG",
+          "Update docs",
+          "Pull Request"
+        );
+      }
+
+      story.tasks = R.map((description) => { return { description }; }, tasks);
     }
 
     if (issue.comments && R.is(Array, issue.comments)) {
       story.comments = this.normalizeAllComments(issue.comments, issue, repo);
+    }
+
+    if (!R.isNil(append) && R.is(Object, append)) {
+      story = R.merge(story, append);
     }
 
     return story;
@@ -138,11 +174,11 @@ export class Mentor {
     return text;
   }
 
-  normalizeAllIssue(issues, repo) {
+  normalizeAllIssue(action, issues, repo) {
     var stories = [];
     for (var i = 0; i < issues.length; i++) {
       var kind  = !!issues[i].pull_request ? 'pull' : 'issues';
-      var story = this.normalizeIssue(kind, issues[i], repo);
+      var story = this.normalizeIssue(kind, action, issues[i], repo);
       stories.push(story);
     }
     return stories;

@@ -13,6 +13,28 @@ describe('class Mentor', function() {
   };
   var mentor = new Mentor(options);
 
+  var issue_tasks = [
+    { description: "Check for duplicity" },
+    { description: "Feedback to requester" },
+    { description: "Prioritize" },
+    { description: "Breakdown" },
+    { description: "Implement/Solve" },
+    { description: "Testing" },
+    { description: "Update CHANGELOG" },
+    { description: "Update docs" },
+    { description: "Pull Request" }
+  ];
+
+  var pull_request_tasks = [
+    { description: "Check for duplicity" },
+    { description: "Feedback to requester" },
+    { description: "Mention to issue in PR description" },
+    { description: "Linux test" },
+    { description: "Mac test" },
+    { description: "Merge" },
+    { description: "Close related issues" }
+  ];
+
   describe('data received through api', function() {
     var repository;
     var should_comment = [
@@ -40,7 +62,7 @@ describe('class Mentor', function() {
         var event_name = "issue";
         var issue = yield h.mockPayload(event_name);
 
-        var story = mentor.normalizeIssue('issue', issue, repository);
+        var story = mentor.normalizeIssue('issue', 'opened', issue, repository);
 
         var description = [
           "[@synox](https://github.com/synox):",
@@ -70,6 +92,7 @@ describe('class Mentor', function() {
         h.expect(story.project_id    ).to.deep.equal(project_id);
         h.expect(story.integration_id).to.deep.equal(integration_id);
         h.expect(story.description   ).to.deep.equal(description);
+        h.expect(story.tasks         ).to.deep.equal(issue_tasks);
       })();
     });
 
@@ -78,7 +101,7 @@ describe('class Mentor', function() {
         var event_name = "pull_request_opened";
         var payload    = yield h.mockPayload(event_name);
 
-        var story = mentor.normalizeIssue('pull', payload.pull_request, payload.repository);
+        var story = mentor.normalizeIssue('pull', 'opened', payload.pull_request, payload.repository);
 
         var description = [
           "[@gullitmiranda](https://github.com/gullitmiranda):",
@@ -99,6 +122,7 @@ describe('class Mentor', function() {
         h.expect(story.project_id    ).to.deep.equal(project_id);
         h.expect(story.integration_id).to.deep.equal(integration_id);
         h.expect(story.description   ).to.deep.equal(description);
+        h.expect(story.tasks         ).to.deep.equal(pull_request_tasks);
       })();
     });
 
@@ -107,7 +131,7 @@ describe('class Mentor', function() {
         var event_name = "issue_with_comment";
         var issue = yield h.mockPayload(event_name);
 
-        var story = mentor.normalizeIssue('issue', issue, repository);
+        var story = mentor.normalizeIssue('issue', 'opened', issue, repository);
 
         h.expect(story.name    ).to.deep.equal("#378 [cli] azk shell --mount option isn't working");
         h.expect(story.comments).to.have.length(1);
@@ -156,6 +180,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data.tasks         ).to.deep.equal(pull_request_tasks);
       })();
     });
 
@@ -188,6 +213,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data).to.not.have.property("tasks");
       })();
     });
 
@@ -220,6 +246,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data).to.not.have.property("tasks");
       })();
     });
 
@@ -252,6 +279,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data).to.not.have.property("tasks");
       })();
     });
 
@@ -282,6 +310,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data.tasks         ).to.deep.equal(issue_tasks);
       })();
     });
 
@@ -319,6 +348,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data).to.not.have.property("tasks");
       })();
     });
 
@@ -356,6 +386,7 @@ describe('class Mentor', function() {
         h.expect(data.project_id    ).to.deep.equal(project_id);
         h.expect(data.integration_id).to.deep.equal(integration_id);
         h.expect(data.description   ).to.deep.equal(description);
+        h.expect(data).to.not.have.property("tasks");
       })();
     });
 
