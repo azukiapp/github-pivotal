@@ -1,4 +1,4 @@
-# azk-projects-boilerplate
+# github-pivotal
 
 `azk-projects-boilerplate` follow `azk` standards to create new npm packages.
 Search for `azk-projects-boilerplate` to find what have to be changed before upload.
@@ -6,6 +6,27 @@ Search for `azk-projects-boilerplate` to find what have to be changed before upl
 - **src**:  all files will transpiled with babel to lib/src
 - **spec**: all files will transpiled with babel to lib/spec
 - **bin**:  no ocours transpilation here
+
+#### Migrate repository:
+
+- Change the target project in the pivotal:
+
+    ```
+    # local (.env file)
+    PIVOTAL_PROJECT_ID=0000
+    PIVOTAL_INTEGRATION_ID=0000
+
+    # in Heroku
+    heroku config:set PIVOTAL_PROJECT_ID=0000 PIVOTAL_INTEGRATION_ID=0000
+    ```
+
+- Run script to make migration:
+
+    ```
+    heroku run 'bin/github_pivotal azukiapp/azk --states="{ issue: 'unscheduled', pull_request: 'unscheduled' }"'
+    ```
+
+    NOTE: changge `azukiapp/azk` to your repository
 
 #### Before start development
 
