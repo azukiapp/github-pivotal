@@ -4,7 +4,8 @@
   "description": "github-pivotal",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -w ./lib -w index.js --verbose index.js",
+    "start": "node index.js",
+    "development": "nodemon -w ./lib -w index.js --verbose index.js",
     "test": "./node_modules/.bin/gulp lint test",
     "deploy": "./node_modules/.bin/npm-deploy"
   },
