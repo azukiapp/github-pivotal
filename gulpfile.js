@@ -12,9 +12,11 @@ gulp.task(
   'Get Github repositories data and send to Pivotal ' +
     '(i.g.: `gulp github:pivotal --repos=azukiapp/azk,azukiapp/homebrew-azk`',
   function() {
+    console.log('args:', args);
     var repos = (!!args.repos) ? args.repos.replace(',', ' ') : '';
+    var state = (!!args.states) ? ('--states="' + args.states + '"') : '';
     var bin_path = 'bin/github_pivotal';
-    var command  = [bin_path, repos].join(' ');
+    var command  = [bin_path, repos, state].join(' ');
 
     return gulp.src(bin_path, { read: false })
       .pipe(shell(command));

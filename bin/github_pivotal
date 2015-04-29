@@ -7,10 +7,12 @@ require('dotenv').load({ silent: true });
 var nopt = require('nopt');
 
 var knownOpts = {
-  'help'    : Boolean
+  'states': String,
+  'help'  : Boolean
 };
 
 var shortHands = {
+  '-s': ['--states'],
   '?': ['--help'],
   'h': ['--help']
 };
@@ -29,11 +31,13 @@ if (parsed.help || parsed.argv.original.length === 0) {
     '',
     ' Options:',
     '',
+    '   --state, -s      Set state to issues and pull_requests',
     '   --help, -h, -?   show this help message',
     '',
     ' Examples:',
     '',
     '   $ github_pivotal azukiapp/azk',
+    '   $ github_pivotal azukiapp/azk --states="{ issue: \'unscheduled\', pull_request: \'unscheduled\' }"',
     '   $ github_pivotal azukiapp/azk azukiapp/homebrew-azk',
     ''
   ].join('\n');
@@ -52,6 +56,10 @@ var options = {
     integration_id: process.env.PIVOTAL_INTEGRATION_ID
   }
 };
+
+if (parsed.states) {
+  options.state = parsed.states;
+}
 
 var repos = parsed.argv.remain;
 
