@@ -37,8 +37,9 @@ export class Pivotal {
       throw new Error('`api_key` is required');
     }
 
-    this.client     = BPromise.promisifyAll(new PivotalTracker(api_key));
-    this.project_id = options.project_id;
+    this.client      = BPromise.promisifyAll(new PivotalTracker(api_key));
+    this.project_id  = options.project_id;
+    this.max_retries = 3;
   }
 
   searchByExternalId(external_id) {
@@ -82,6 +83,8 @@ export class Pivotal {
       var result_stories = [];
       var to_send;
 
+      var retries = 0;
+
       do {
         to_send = [];
 
@@ -95,7 +98,8 @@ export class Pivotal {
         }
 
         stories = to_send;
-      } while (!R.isEmpty(to_send));
+        retries++;
+      } while (!R.isEmpty(to_send) && this.max_retries < retries);
 
       return result_stories;
     }.bind(this))();
