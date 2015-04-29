@@ -63,15 +63,16 @@ export class Pivotal {
       msg += chalk.green(story.name);
       log(msg);
 
-      story = yield this.client.createStoryAsync(story.project_id, story);
+      var result = yield this.client.createStoryAsync(story.project_id, story);
 
-      if (story.kind === 'error') {
-        console.error('Error:', story);
+      if (result.kind === 'error') {
+        console.error('Error:', result);
+        log(JSON.stringify(story));
       } else {
-        log(`  ${chalk.green("Success")}: ${story.url}\n`);
+        log(`  ${chalk.green("Success")}: ${result.url}\n`);
       }
 
-      return story;
+      return result;
     }.bind(this))();
   }
 
@@ -87,7 +88,7 @@ export class Pivotal {
         for (var i = 0; i < stories.length; i++) {
           var result = yield this.createStory(stories[i]);
           if (result.kind === 'error') {
-            to_send.push(stories[i])
+            to_send.push(stories[i]);
           } else {
             result_stories.push(result);
           }
