@@ -62,7 +62,7 @@ describe('class Mentor', function() {
         var event_name = "issue";
         var issue = yield h.mockPayload(event_name);
 
-        var story = mentor.normalizeIssue('issue', 'opened', issue, repository);
+        var story = mentor.normalizeIssue('issues', 'opened', issue, repository);
 
         var description = [
           "[@synox](https://github.com/synox):",
@@ -87,7 +87,7 @@ describe('class Mentor', function() {
         var labels         = [ 'github', 'issue', 'azk' ];
 
         h.expect(story.name          ).to.deep.equal("#369 azk agent does not start");
-        h.expect(story.external_id   ).to.deep.equal("azukiapp/azk/issue/369");
+        h.expect(story.external_id   ).to.deep.equal("azukiapp/azk/issues/369");
         h.expect(story.labels        ).to.deep.equal(labels);
         h.expect(story.project_id    ).to.deep.equal(project_id);
         h.expect(story.integration_id).to.deep.equal(integration_id);
@@ -131,7 +131,7 @@ describe('class Mentor', function() {
         var event_name = "issue_with_comment";
         var issue = yield h.mockPayload(event_name);
 
-        var story = mentor.normalizeIssue('issue', 'opened', issue, repository);
+        var story = mentor.normalizeIssue('issues', 'opened', issue, repository);
 
         h.expect(story.name    ).to.deep.equal("#378 [cli] azk shell --mount option isn't working");
         h.expect(story.comments).to.have.length(1);

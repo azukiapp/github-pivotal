@@ -89,7 +89,7 @@ class Server {
     github_webhook.handler.on('issue_comment', function (event) {
       var payload = event.payload;
       var issue   = payload.issue;
-      var kind    = (issue.pull_request) ? "pull" : "issue";
+      var kind    = (issue.pull_request) ? "pull" : "issues";
       log('Received an issue_comment event for "%s" action=%s: "#%d %s"',
         payload.repository.full_name,
         payload.action,
