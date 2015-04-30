@@ -3,8 +3,8 @@ require('source-map-support').install();
 
 require('dotenv').load({ silent: true });
 
-if (process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_LOG) {
-  require('newrelic')
+if (process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_LOG_LEVEL) {
+  require('newrelic');
 }
 
 var Server = require('./lib/src/server.js');
