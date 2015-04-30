@@ -14,10 +14,16 @@ class Server {
     var pivotal        = new Pivotal      (keys.pivotal_api_key  , mentor.options.pivotal);
 
     http.createServer(function (req, res) {
-      github_webhook.handler(req, res, function () {
-        res.statusCode = 404;
-        res.end('no such location');
-      });
+      if (req.url.split('?').shift() === '/ping') {
+        res.statusCode = 200;
+        res.end('status is ok!');
+      } else {
+        github_webhook.handler(req, res, function () {
+          res.statusCode = 404;
+          res.end('no such location');
+        });
+      }
+
     }).listen(port || 5000);
 
     github_webhook.handler.on('error', function (err) {
