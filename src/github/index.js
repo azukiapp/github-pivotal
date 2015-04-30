@@ -63,7 +63,7 @@ class Github {
   }
 
   parseUrl(url) {
-    var regex  = /^(?:.*\/)?([\w-_]*)\/([\w-_]*)$/g;
+    var regex  = /^(?:.*\/)?([\w-_.]*)\/([\w-_.]*)$/g;
     var params = regex.exec(url);
     if (!params) {
       throw new Error(`Invalid url to parse: ${url}`);
