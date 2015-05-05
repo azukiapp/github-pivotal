@@ -28,4 +28,12 @@ Events:
 Kernel:
  ☐ Create a way to identify projects through url webhook.
 
+Documentation:
+ ☐ structure
+ ☐ dependencies
+ ☐ Deploy para Heroku
+ ☐ Plugins (mainly because of using Newrelic to ping)
+
+To more TODOs check https://github.com/azukiapp/github-pivotal/issues
+
 ## To highlighter `TODO` files install [`PlainTasks`](https://github.com/aziz/PlainTasks)
