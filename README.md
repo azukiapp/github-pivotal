@@ -37,7 +37,7 @@
 
     2. And fill out the form with your information, including `GITHUB_SECRET_KEY` you took the heroku and save:
 
-       ![Add Webhook](docs/add_webhook.png)
+       ![Add Webhook](https://raw.githubusercontent.com/azukiapp/github-pivotal/master/docs/add_webhook.jpg)
 
 
 #### Before start development
