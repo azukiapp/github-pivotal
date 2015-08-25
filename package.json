@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "development": "nodemon -w ./lib -w index.js --verbose index.js",
+    "provision": "./node_modules/.bin/gulp babel",
     "test": "./node_modules/.bin/gulp lint test",
     "postinstall": "gulp babel"
   },

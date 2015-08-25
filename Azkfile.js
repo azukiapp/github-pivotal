@@ -71,7 +71,7 @@ systems({
     command: "npm run start",
     provision: [
       "npm install",
-      "gulp babel",
+      "npm run provision",
     ],
     http: {
       domains: [
