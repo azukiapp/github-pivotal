@@ -48,10 +48,6 @@ systems({
     depends: [ "github-pivotal" ],
     // More images:  http://images.azk.io
     image: {"docker": "azukiapp/ngrok:latest"},
-    provision: [
-      "npm install",
-      "gulp babel",
-    ],
     wait: {"retry": 20, "timeout": 1000},
     http: {
       domains: [ "#{manifest.dir}-#{system.name}.#{azk.default_domain}" ],
@@ -73,6 +69,10 @@ systems({
   production: {
     extends: name,
     command: "npm run start",
+    provision: [
+      "npm install",
+      "gulp babel",
+    ],
     http: {
       domains: [
         "#{process.env.AZK_HOST}",
