@@ -2,6 +2,8 @@
  * Documentation: http://docs.azk.io/Azkfile.js
  */
 
+var name = 'github-pivotal';
+
 // Adds the systems that shape your system
 systems({
   'github-pivotal': {
@@ -62,6 +64,37 @@ systems({
       NGROK_CONFIG   : "/ngrok/ngrok.yml",
       NGROK_LOG      : "/ngrok/logs/ngrok.log",
       NGROK_SUBDOMAIN: "#{manifest.dir}",
+    },
+  },
+  production: {
+    extends: name,
+    http: {
+      domains: [
+        "#{process.env.AZK_HOST}",
+        "#{process.env.AZK_HOST_IP}",
+        "#{system.name}.#{azk.default_domain}",
+      ]
+    },
+    scalable: {"default": 0, "limit": 0},
+    envs: {
+      AZK_ENV: 'production',
+      HOST   : '#{process.env.AZK_HOST}',
+    },
+  },
+  deploy: {
+    image: {"docker": "azukiapp/deploy-digitalocean"},
+    mounts: {
+      "/azk/deploy/src":  path("."),
+      "/azk/deploy/.ssh": path("#{process.env.HOME}/.ssh")
+    },
+    scalable: {"default": 0, "limit": 0},
+    envs: {
+      DROPLET_NAME          : name,
+      REMOTE_PROJECT_PATH_ID: name,
+      ENV_FILE              : ".env.production",
+      AZK_RESTART_COMMAND   : "azk restart production -Rvvvv",
+      AZK_HOST              : 'http://' + name + '.azk.io',
+      AZK_ENV               : 'production',
     },
   },
 });
