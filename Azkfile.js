@@ -68,6 +68,7 @@ systems({
   },
   production: {
     extends: name,
+    command: "npm run start",
     http: {
       domains: [
         "#{process.env.AZK_HOST}",
