@@ -98,7 +98,7 @@ systems({
       REMOTE_PROJECT_PATH_ID: name,
       ENV_FILE              : ".env.production",
       AZK_RESTART_COMMAND   : "azk restart production -Rvvvv",
-      AZK_HOST              : 'http://' + name + '.azk.io',
+      AZK_HOST              : name + '.azk.io',
       AZK_ENV               : 'production',
     },
   },
